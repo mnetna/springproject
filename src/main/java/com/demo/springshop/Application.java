@@ -12,15 +12,19 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Application.class);
+//        SpringApplication app = new SpringApplication(Application.class);
+        SpringApplication app = new SpringApplicationBuilder()
+                .sources(Application.class)
+                .listeners(new ApplicationPidFileWriter("./application.pid"))
+                .build();
+
         app.run(args);
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(Application.class)
-                .listeners(new ApplicationPidFileWriter("./application.pid"));
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(Application.class);
+//    }
 
     @Bean
     public GracefulShutdown gracefulShutdown() {
