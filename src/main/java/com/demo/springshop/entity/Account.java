@@ -10,18 +10,38 @@ public class Account {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private String userid;
 
     private String username;
 
     private String password;
 
-    public Long getId() {
-        return id;
+    private String phone;
+
+    private String address;
+
+    public String getUserid() {
+        return userid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getUsername() {
@@ -38,20 +58,5 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return Objects.equals(id, account.id) &&
-                Objects.equals(username, account.username) &&
-                Objects.equals(password, account.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password);
     }
 }

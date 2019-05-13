@@ -27,7 +27,7 @@ import java.sql.Statement;
 //            System.out.println(connection.getMetaData().getUserName());
 //
 //            Statement statement = connection.createStatement();
-//            String sql = "CREATE TABLE USERS(ID INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id))";
+//            String sql = "CREATE TABLE account(userid VARCHAR(255) NOT NULL, username VARCHAR(255), password VARCHAR(255), phone VARCHAR(255), address VARCHAR(255), PRIMARY KEY (userid))";
 //            statement.executeUpdate(sql);
 //        }
 //
