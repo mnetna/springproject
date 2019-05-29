@@ -10,4 +10,9 @@ public class LoginController {
     public String index() {
         return "login_register_modal";
     }
+
+    @GetMapping("/submit")
+    public String submit() {
+        return "";
+    }
 }
