@@ -3,9 +3,8 @@ package com.demo.springshop.controller;
 import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.node.ObjectNode;
-import com.demo.springshop.kafka.KafkaProducer;
+import com.demo.springshop.kafka.Kafka;
 import com.demo.springshop.kafka.impl.KafkaProducerImpl;
-import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +22,7 @@ public class KafkaController {
     private static final Random random = new Random();
 
     @Autowired
-    private KafkaProducer kafkaProducer;
+    private Kafka kafkaProducer;
 
     @GetMapping("/kafka")
     public String kafka() throws InterruptedException, ExecutionException, JsonProcessingException {

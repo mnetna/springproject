@@ -1,20 +1,18 @@
 package com.demo.springshop.kafka.impl;
 
 import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
-import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
-import com.couchbase.client.deps.com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
+import com.demo.springshop.kafka.Kafka;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.demo.springshop.kafka.KafkaProducer;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
-import java.util.*;
 import java.util.concurrent.ExecutionException;
 
-@Service
-public class KafkaProducerImpl implements KafkaProducer {
+@Component
+public class KafkaProducerImpl implements Kafka {
 
     @Autowired
     private Producer producer;
