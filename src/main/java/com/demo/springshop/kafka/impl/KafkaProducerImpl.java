@@ -14,14 +14,14 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
-public class KafkaProducerImpl {
+public class KafkaProducerImpl implements  Kafka {
 
-    public void publishMessage(Producer<String, byte[]> producer, String topicName, byte[] valueJson) throws JsonProcessingException, ExecutionException, InterruptedException {
-        String key = UUID.randomUUID().toString();
+    @Autowired
+    private Producer producer;
 
+    public void publishMessage(String topicName, String key, byte[] valueJson) throws JsonProcessingException, ExecutionException, InterruptedException {
         ProducerRecord<String, byte[]> record = new ProducerRecord<>(topicName, key, valueJson);
-
-        RecordMetadata md = producer.send(record).get();
+        RecordMetadata md = (RecordMetadata) producer.send(record).get();
         System.out.println("Published: {"+md.topic()+"}, {"+md.partition()+"}, {"+md.offset()+"} key: {"+key+"}");
     }
 

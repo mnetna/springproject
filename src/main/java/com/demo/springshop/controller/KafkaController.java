@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -21,19 +22,17 @@ public class KafkaController {
     private static final Random random = new Random();
 
     @Autowired
-    private Producer producer;
-
-    @Autowired
     private KafkaProducerImpl kafkaProducer;
 
     @GetMapping("/kafka")
     public String kafka() throws InterruptedException, ExecutionException, JsonProcessingException {
-        System.out.println("Kafka Producer Execute!!!");
+        String key = UUID.randomUUID().toString();
 
+        // Json Object 생성
         ObjectNode weatherReport = randomWeatherReport();
         byte[] valueJson = objectMapper.writeValueAsBytes(weatherReport);
 
-        kafkaProducer.publishMessage(producer, TOPIC, valueJson);
+        kafkaProducer.publishMessage(TOPIC, key, valueJson);
         return "Kafka Producer Execute";
     }
 
