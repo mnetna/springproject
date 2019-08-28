@@ -30,14 +30,12 @@ public class KafkaController {
         ObjectNode weatherReport = randomWeatherReport();
         byte[] valueJson = objectMapper.writeValueAsBytes(weatherReport);
 
-        // Just Async Publish
-        //kafkaProducer.publishMessage(TOPIC, key, valueJson);
+        this.kafkaProducer.syncPublishMessage(TOPIC, key, valueJson);
 
-        // Callback By Async
-        this.kafkaProducer.publishMessageWithCallback(TOPIC, key, valueJson,
+        this.kafkaProducer.asyncPublishMessage(TOPIC, key, valueJson,
                 (recordMetadata, exception) -> {
                     if (recordMetadata != null) {
-                        System.out.println("partition(" + recordMetadata.partition() + "), offset(" + recordMetadata.offset() + ")");
+                        System.out.println("***Async Publish: partition=[" + recordMetadata.partition() + "], offset=[" + recordMetadata.offset() + "]");
                     } else {
                         exception.printStackTrace();
                     }
