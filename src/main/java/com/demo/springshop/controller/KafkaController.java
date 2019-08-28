@@ -37,7 +37,7 @@ public class KafkaController {
         //kafkaProducer.publishMessage(TOPIC, key, valueJson);
 
         // Add Callback By Async
-        kafkaProducer.publishMessageWithCallback(TOPIC, key, valueJson,
+        this.kafkaProducer.publishMessageWithCallback(TOPIC, key, valueJson,
                 (recordMetadata, exception) -> {
                     if (recordMetadata != null) {
                         System.out.println("partition(" + recordMetadata.partition() + "), offset(" + recordMetadata.offset() + ")");
