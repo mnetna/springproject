@@ -18,17 +18,17 @@ public class KafkaProducerImpl implements Kafka {
 
     @Override
     public void publishMessage(String topicName, String key, byte[] valueJson) throws ExecutionException, InterruptedException {
-        RecordMetadata recordMetadata = (RecordMetadata) producer.send(new ProducerRecord<>(topicName, key, valueJson)).get();
+        this.producer.send(new ProducerRecord<>(topicName, key, valueJson));
     }
 
     @Override
     public void publishMessageWithCallback(String topicName, String key, byte[] valueJson, Callback callback) {
-        producer.send(new ProducerRecord<>(topicName, key, valueJson), callback);
+        this.producer.send(new ProducerRecord<>(topicName, key, valueJson), callback);
     }
 
     @Override
     public void close() {
-        producer.flush();
-        producer.close();
+        this.producer.flush();
+        this.producer.close();
     }
 }
