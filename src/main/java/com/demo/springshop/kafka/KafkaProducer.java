@@ -5,6 +5,6 @@ import org.apache.kafka.clients.producer.Producer;
 
 import java.util.concurrent.ExecutionException;
 
-public interface Kafka {
+public interface KafkaProducer {
     public void publishMessage(String topicName, String key, byte[] valueJson) throws JsonProcessingException, ExecutionException, InterruptedException ;
 }
