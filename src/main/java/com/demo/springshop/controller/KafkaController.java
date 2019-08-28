@@ -3,15 +3,11 @@ package com.demo.springshop.controller;
 import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.node.ObjectNode;
-import com.demo.springshop.kafka.Kafka;
-import com.demo.springshop.kafka.impl.KafkaProducerImpl;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.RecordMetadata;
+import com.demo.springshop.kafka.KafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.crypto.URIReferenceException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -25,7 +21,7 @@ public class KafkaController {
     private static final Random random = new Random();
 
     @Autowired
-    private Kafka kafkaProducer;
+    private KafkaProducer kafkaProducer;
 
     @GetMapping("/kafka")
     public String kafka() throws InterruptedException, ExecutionException, JsonProcessingException {
@@ -34,9 +30,10 @@ public class KafkaController {
         ObjectNode weatherReport = randomWeatherReport();
         byte[] valueJson = objectMapper.writeValueAsBytes(weatherReport);
 
+        // Just Async Publish
         //kafkaProducer.publishMessage(TOPIC, key, valueJson);
 
-        // Add Callback By Async
+        // Callback By Async
         this.kafkaProducer.publishMessageWithCallback(TOPIC, key, valueJson,
                 (recordMetadata, exception) -> {
                     if (recordMetadata != null) {

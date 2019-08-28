@@ -1,6 +1,6 @@
 package com.demo.springshop.kafka.impl;
 
-import com.demo.springshop.kafka.Kafka;
+import com.demo.springshop.kafka.KafkaProducer;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.ExecutionException;
 
 @Component
-public class KafkaProducerImpl implements Kafka {
+public class KafkaProducerImpl implements KafkaProducer {
 
     @Autowired
     private Producer producer;
@@ -28,7 +28,5 @@ public class KafkaProducerImpl implements Kafka {
 
     @Override
     public void close() {
-        this.producer.flush();
-        this.producer.close();
     }
 }
