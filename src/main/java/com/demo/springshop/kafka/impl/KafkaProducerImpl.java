@@ -25,9 +25,10 @@ public class KafkaProducerImpl implements KafkaProducer {
      * @throws InterruptedException
      */
     @Override
-    public void syncPublishMessage(String topicName, String key, byte[] valueJson) throws ExecutionException, InterruptedException {
+    public void syncPublishMessage(String topicName, Object key, Object valueJson) throws ExecutionException, InterruptedException {
         RecordMetadata recordMetadata = (RecordMetadata) this.producer.send(new ProducerRecord<>(topicName, key, valueJson)).get();
-        System.out.println("***Sync Publish: partition=[" + recordMetadata.partition() + "], offset=[" + recordMetadata.offset() + "]");
+//        System.out.println(">>> Sync Publish: partition=[" + recordMetadata.partition() + "], offset=[" + recordMetadata.offset() + "]");
+        System.out.println(">>> Finish: key=["+key+"], value=["+valueJson+"]");
     }
 
     /**
@@ -38,11 +39,12 @@ public class KafkaProducerImpl implements KafkaProducer {
      * @param callback
      */
     @Override
-    public void asyncPublishMessage(String topicName, String key, byte[] valueJson, Callback callback) {
+    public void asyncPublishMessage(String topicName, Object key, Object valueJson, Callback callback) {
         this.producer.send(new ProducerRecord<>(topicName, key, valueJson), callback);
     }
 
     @Override
     public void close() {
+
     }
 }

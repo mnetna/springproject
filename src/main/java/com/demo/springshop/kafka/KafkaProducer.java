@@ -5,8 +5,8 @@ import org.apache.kafka.clients.producer.Callback;
 
 import java.util.concurrent.ExecutionException;
 
-public interface KafkaProducer {
-    public void syncPublishMessage(String topicName, String key, byte[] valueJson) throws ExecutionException, InterruptedException ;
-    public void asyncPublishMessage(String topicName, String key, byte[] valueJson, Callback callback);
+public interface KafkaProducer<K, V> {
+    public void syncPublishMessage(String topicName, K key, V valueJson) throws ExecutionException, InterruptedException ;
+    public void asyncPublishMessage(String topicName, K key, V valueJson, Callback callback);
     public void close();
 }
