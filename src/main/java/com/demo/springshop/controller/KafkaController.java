@@ -48,7 +48,6 @@ public class KafkaController {
                 String key = UUID.randomUUID().toString();
                 System.out.println(">>> Before: Thread Name=["+Thread.currentThread().getName()+"], key=["+key+"], value=["+value+"]");
 
-
                 this.kafkaProducer.asyncPublishMessage(TOPIC, key, value,
                         (recordMetadata, exception) -> {
                             if (recordMetadata != null) {
