@@ -4,16 +4,20 @@ import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingExcept
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.node.ObjectNode;
 import com.demo.springshop.kafka.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.StopWatch;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 @RestController
 public class KafkaController {
@@ -24,47 +28,116 @@ public class KafkaController {
     @Autowired
     private KafkaProducer kafkaProducer;
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
     @GetMapping("/sync")
     public String syncKafka() throws ExecutionException, InterruptedException, JsonProcessingException {
-        long start = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch("Main SW");
 
         String key = UUID.randomUUID().toString();
         String valueJson = objectMapper.writeValueAsString(randomWeatherReport());
         this.kafkaProducer.syncPublishMessage(TOPIC, key, valueJson);
 
-        return "응답시간 : "+String.valueOf(System.currentTimeMillis()-start)+"ms";
+        System.out.println(stopWatch.toString());
+
+        return "Success!!!";
     }
 
     @GetMapping("/async")
-    public String kafka() throws InterruptedException, ExecutionException, JsonProcessingException {
-        List<String> jsonList =  new ArrayList<>();
-        for (int i=0; i < 10000; i++) { jsonList.add(objectMapper.writeValueAsString(randomWeatherReport())); }
+    public String kafka(@RequestParam String count) throws InterruptedException, ExecutionException, JsonProcessingException {
+        List<Map<String, String>> jsonList = createData(Integer.valueOf(count));
+        CountDownLatch latch = new CountDownLatch(jsonList.size());
 
-        long start = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch("Main SW");
+        StopWatch pStopWatch = new StopWatch("Producer SW");
+        stopWatch.start();
+        pStopWatch.start();
 
-//        ExecutorService executor = Executors.newFixedThreadPool(5);
+        ExecutorService executor = Executors.newFixedThreadPool(3);
         CompletableFuture.runAsync(()->{
-            jsonList.parallelStream().forEach(value -> {
-                String key = UUID.randomUUID().toString();
-                System.out.println(">>> Before: Thread Name=["+Thread.currentThread().getName()+"], key=["+key+"], value=["+value+"]");
+            jsonList.stream().parallel().forEach(v -> {
+                String key = v.get("key");
+                String value = v.get("value");
 
                 this.kafkaProducer.asyncPublishMessage(TOPIC, key, value,
                         (recordMetadata, exception) -> {
                             if (recordMetadata != null) {
-                                //System.out.println(">>> Async Publish: partition=[" + recordMetadata.partition() + "], offset=[" + recordMetadata.offset() + "]");
-                                System.out.println(">>> Finish: Thread Name=["+Thread.currentThread().getName()+"], key=["+key+"], value=["+value+"]");
+                                System.out.println(">>> Async Publish : Thread Name=["+Thread.currentThread().getName()+"], Partitions=["+recordMetadata.partition()+"], Offset=["+recordMetadata.offset()+"]");
+                                latch.countDown();
                             } else {
                                 exception.printStackTrace();
                             }
                         });
-                System.out.println(">>> After: Thread Name=["+Thread.currentThread().getName()+"], key=["+key+"], value=["+value+"]");
+                System.out.println(">>> After: Thread Name=["+Thread.currentThread().getName()+"], key=["+key+"]");
+
             });
-        }).thenRun(() -> System.out.println("완료시간: ["+(System.currentTimeMillis()-start)+"ms]"));
-//        ,executor);
+        },executor).thenRun(() -> {
+            stopWatch.stop();
+            System.out.println(stopWatch.toString());
+        });
 
-        System.out.println(">>> Sucess!!!");
+        latch.await();
+        pStopWatch.stop();
+        System.out.println(pStopWatch.toString());
 
-        return "응답시간 : "+String.valueOf(System.currentTimeMillis()-start)+"ms";
+        return "Success!!!";
+    }
+
+    @GetMapping("/springkafka")
+    public String callWithSpringKafka(@RequestParam String count) throws InterruptedException, JsonProcessingException {
+        List<Map<String, String>> jsonList = createData(Integer.valueOf(count));
+        CountDownLatch latch = new CountDownLatch(jsonList.size());
+
+        StopWatch stopWatch = new StopWatch("Main SW");
+        StopWatch pStopWatch = new StopWatch("Producer SW");
+        stopWatch.start();
+        pStopWatch.start();
+
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        CompletableFuture.runAsync(()->{
+            jsonList.stream().parallel().forEach(v -> {
+                String key = v.get("key");
+                String value = v.get("value");
+
+                ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(new ProducerRecord<>(TOPIC, key, value));
+                future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+                    @Override
+                    public void onSuccess(SendResult<String, String> result) {
+                        try {
+                            System.out.println(">>> Async Publish : Thread Name=["+Thread.currentThread().getName()+"], Partitions=["+ future.get().getRecordMetadata().partition()+"], Offset=["+future.get().getRecordMetadata().offset()+"]");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Throwable ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                System.out.println(">>> After: Thread Name=["+Thread.currentThread().getName()+"], key=["+key+"]");
+
+            });
+        },executor).thenRun(() -> {
+            stopWatch.stop();
+            System.out.println(stopWatch.toString());
+        });
+
+        return "Success!!!";
+    }
+
+    private List<Map<String, String>> createData(int loopCnt) throws JsonProcessingException {
+        List<Map<String, String>> jsonList = new ArrayList<>();
+        for (int i=0; i < loopCnt; i++) {
+            Map<String, String> hm = new LinkedHashMap<>();
+            hm.put("key", String.valueOf(i));
+            hm.put("value", objectMapper.writeValueAsString(randomWeatherReport()));
+            jsonList.add(hm);
+        }
+        return jsonList;
     }
 
     private ObjectNode randomWeatherReport() {

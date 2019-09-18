@@ -8,5 +8,4 @@ import java.util.concurrent.ExecutionException;
 public interface KafkaProducer<K, V> {
     public void syncPublishMessage(String topicName, K key, V valueJson) throws ExecutionException, InterruptedException ;
     public void asyncPublishMessage(String topicName, K key, V valueJson, Callback callback);
-    public void close();
 }

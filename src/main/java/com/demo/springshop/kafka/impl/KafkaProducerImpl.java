@@ -42,9 +42,4 @@ public class KafkaProducerImpl implements KafkaProducer {
     public void asyncPublishMessage(String topicName, Object key, Object valueJson, Callback callback) {
         this.producer.send(new ProducerRecord<>(topicName, key, valueJson), callback);
     }
-
-    @Override
-    public void close() {
-
-    }
 }
