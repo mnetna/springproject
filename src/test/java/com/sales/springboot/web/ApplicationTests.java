@@ -1,4 +1,4 @@
-package com.sales.springboot;
+package com.sales.springboot.web;
 
 public class ApplicationTests {
 }

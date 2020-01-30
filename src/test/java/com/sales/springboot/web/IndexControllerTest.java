@@ -1,4 +1,4 @@
-package com.sales.springboot;
+package com.sales.springboot.web;
 
 import com.sales.springboot.web.IndexController;
 import org.junit.Test;
