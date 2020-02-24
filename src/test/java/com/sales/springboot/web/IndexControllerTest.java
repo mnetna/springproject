@@ -1,6 +1,5 @@
 package com.sales.springboot.web;
 
-import com.sales.springboot.web.IndexController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = IndexController.class)
+@WebMvcTest(controllers = PageController.class)
 public class IndexControllerTest {
 
     @Autowired
