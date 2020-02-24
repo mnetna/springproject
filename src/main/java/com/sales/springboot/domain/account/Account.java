@@ -1,67 +1,39 @@
 package com.sales.springboot.domain.account;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
 @Entity
 public class Account {
 
-    @Id
-    @GeneratedValue
-    private String userid;
+    @Column(length = 100, nullable = false, unique = true)
+    private String email;
 
-    private String username;
+    @Column(length = 20, nullable = false)
+    private String firstName;
 
+    @Column(length = 20, nullable = false)
+    private String lastName;
+    
+    @Column(length = 12, nullable = false)
     private String password;
 
-    private String phone;
-
-    private String address;
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
+    
+    @Builder
+    public Account(String email, String firstName, String lastName, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.password = password;
     }
 }

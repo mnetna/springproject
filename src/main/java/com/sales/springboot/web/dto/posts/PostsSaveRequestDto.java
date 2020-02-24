@@ -1,4 +1,4 @@
-package com.sales.springboot.web.dto;
+package com.sales.springboot.web.dto.posts;
 
 import com.sales.springboot.domain.posts.Posts;
 import lombok.Builder;

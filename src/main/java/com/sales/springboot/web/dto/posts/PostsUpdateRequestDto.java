@@ -1,4 +1,4 @@
-package com.sales.springboot.web.dto;
+package com.sales.springboot.web.dto.posts;
 
 import lombok.Builder;
 import lombok.Getter;

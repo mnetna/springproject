@@ -1,9 +1,10 @@
 package com.sales.springboot.web;
 
 import com.sales.springboot.service.posts.PostsService;
-import com.sales.springboot.web.dto.PostsResponseDto;
-import com.sales.springboot.web.dto.PostsSaveRequestDto;
-import com.sales.springboot.web.dto.PostsUpdateRequestDto;
+import com.sales.springboot.web.dto.posts.PostsResponseDto;
+import com.sales.springboot.web.dto.posts.PostsSaveRequestDto;
+import com.sales.springboot.web.dto.posts.PostsUpdateRequestDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

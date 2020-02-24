@@ -2,8 +2,9 @@ package com.sales.springboot.web;
 
 import com.sales.springboot.domain.posts.Posts;
 import com.sales.springboot.domain.posts.PostsRepository;
-import com.sales.springboot.web.dto.PostsSaveRequestDto;
-import com.sales.springboot.web.dto.PostsUpdateRequestDto;
+import com.sales.springboot.web.dto.posts.PostsSaveRequestDto;
+import com.sales.springboot.web.dto.posts.PostsUpdateRequestDto;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Test;
