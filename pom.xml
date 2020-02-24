@@ -74,6 +74,19 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+		<!-- JAXBException -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+
+		<!-- JAVA GA -->
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.25.0-GA</version>
+		</dependency>
     </dependencies>
 
     <build>
