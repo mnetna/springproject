@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
     @GetMapping("/")
+    public String getIndexPage() {
+        return "index";
+    }
+
+    @GetMapping("/auth")
     public String getLoginPage() {
         return "login";
     }

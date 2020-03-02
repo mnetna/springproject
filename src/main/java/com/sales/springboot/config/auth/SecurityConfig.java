@@ -9,17 +9,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity //Spring Security 기능 활성화
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
 
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().headers().frameOptions().disable()
-                .and().authorizeRequests()
-                .antMatchers("/", "/register", "/css/**", "/images/**", "/js/**", "/scss/**", "/vendor/**", "/h2-console/**").permitAll()
-                .antMatchers("/api/v1/**").hasRole(Role.USER.name()).anyRequest().authenticated()
-                .and().logout().logoutSuccessUrl("/")
-                .and().oauth2Login().userInfoEndpoint().userService(customOAuth2UserService);
+                .and().antMatcher("/**")
+                .authorizeRequests()
+                    .antMatchers("/auth**", "/register**", "/css/**", "/images/**", "/js/**", "/scss/**", "/vendor/**", "/h2-console/**").permitAll()
+                    .antMatchers("/api/v1/**").hasRole(Role.USER.name()).anyRequest().authenticated()
+                .and().oauth2Login()
+                    .userInfoEndpoint().userService(customOAuth2UserService);
+                //.and().logout().logoutSuccessUrl("/login");
+
     }
 }
