@@ -12,17 +12,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
+    //private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOidcOAuth2UserService customOAuth2UserService;
 
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().headers().frameOptions().disable()
                 .and().antMatcher("/**")
                 .authorizeRequests()
-                    .antMatchers("/auth**", "/register**", "/css/**", "/images/**", "/js/**", "/scss/**", "/vendor/**", "/h2-console/**").permitAll()
+                    .antMatchers("/login", "/register", "/css/**", "/images/**", "/js/**", "/scss/**", "/vendor/**", "/h2-console/**").permitAll()
                     .antMatchers("/api/v1/**").hasRole(Role.USER.name()).anyRequest().authenticated()
-                .and().oauth2Login()
-                    .userInfoEndpoint().userService(customOAuth2UserService);
-                //.and().logout().logoutSuccessUrl("/login");
+                .and().logout().logoutSuccessUrl("/login")
+                .and().oauth2Login().loginPage("/login")
+                    //.userInfoEndpoint().userService(customOAuth2UserService);
+                    .userInfoEndpoint().oidcUserService(customOAuth2UserService);
 
     }
 }
