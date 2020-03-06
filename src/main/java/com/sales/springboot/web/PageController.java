@@ -24,4 +24,9 @@ public class PageController {
     public String register() {
         return "register";
     }
+
+    @GetMapping("/social-register")
+    public String socialRegister() {
+        return "social-register";
+    }
 }
