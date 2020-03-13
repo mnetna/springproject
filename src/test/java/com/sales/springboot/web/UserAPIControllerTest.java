@@ -1,11 +1,8 @@
 package com.sales.springboot.web;
 
-import com.sales.springboot.domain.account.Account;
-import com.sales.springboot.domain.account.AccountRepository;
-import com.sales.springboot.domain.posts.Posts;
-import com.sales.springboot.domain.posts.PostsRepository;
-import com.sales.springboot.web.dto.account.AccountSaveRequestDto;
-import com.sales.springboot.web.dto.posts.PostsSaveRequestDto;
+import com.sales.springboot.domain.user.User;
+import com.sales.springboot.domain.user.UserRepository;
+import com.sales.springboot.web.dto.account.UserSaveRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Test;
@@ -22,7 +19,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AccountAPIControllerTest {
+public class UserAPIControllerTest {
 
     @LocalServerPort
     private int port;
@@ -31,25 +28,25 @@ public class AccountAPIControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     @After
     public void tearDown() throws Exception {
-        accountRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
     public void insertAccount() throws Exception {
         String email = "sssolee90@gmail.com";
-        String firstName = "lee";
-        String lastName = "sol";
+        String name = "lee sol";
         String password = "dlthfdlthf";
+        String picture = "111";
 
-        AccountSaveRequestDto requestDto = AccountSaveRequestDto.builder()
+        UserSaveRequestDto requestDto = UserSaveRequestDto.builder()
+                .name(name)
                 .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
                 .password(password)
+                .picture(picture)
                 .build();
 
         String url = "http://localhost:"+port+"/api/v1/account";
@@ -58,7 +55,7 @@ public class AccountAPIControllerTest {
 
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        List<Account> all = accountRepository.findAll();
+        List<User> all = userRepository.findAll();
 
         Assertions.assertThat(all.get(0).getEmail()).isEqualTo(email);
     }
